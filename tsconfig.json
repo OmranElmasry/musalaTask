@@ -84,9 +84,6 @@
             "screens": [
                 "./screens"
             ],
-            "utils": [
-                "./components"
-            ],
             "styles": [
                 "./styles"
             ],
@@ -104,6 +101,9 @@
             ],
             "api": [
                 "./api"
+            ],
+            "utils": [
+                "./utils"
             ],
             "lib": [
                 "./lib"

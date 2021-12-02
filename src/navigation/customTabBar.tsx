@@ -5,6 +5,7 @@ import { SafeAreaView, TouchableOpacity, View, StyleSheet } from 'react-native'
 import { Navigator } from './navRef'
 import { Icons } from 'assets'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
+import { Colors } from 'styles'
 
 export const CustomTabBar = ({ state, navigation }: BottomTabBarProps) => {
     const navigateToTab = (tabName: any, screen?: string) => {
@@ -31,6 +32,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
+        backgroundColor: Colors.colorGrey2
     },
     navBarIcon: {
         padding: 10,

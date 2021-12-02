@@ -24,6 +24,6 @@ export const Profile = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.colorGrey01,
+        backgroundColor: Colors.colorGrey,
     },
 })
