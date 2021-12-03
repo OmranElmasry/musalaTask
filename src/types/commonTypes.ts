@@ -1,9 +1,9 @@
 export type CommonStoreState = {
-    newsList: newsCard[]
+    newsList: NewsCard[]
     canLoadMoreNews: boolean
 }
 
-export type newsCard = {
+export type NewsCard = {
     author: string
     content: string
     description: string
@@ -15,4 +15,10 @@ export type newsCard = {
     title: string
     url: string
     urlToImage: string
+}
+
+export type NewsCategory = {
+    id: string,
+    index: number,
+    text: string
 }

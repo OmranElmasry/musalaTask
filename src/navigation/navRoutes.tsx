@@ -11,7 +11,6 @@ import {
     ProfileStackParamList,
 } from 'types'
 import * as Screens from 'screens'
-import { Colors } from 'styles'
 import { isReadyRef, navigationRef, Navigator } from './navRef'
 import { CustomTabBar } from './customTabBar'
 
@@ -80,6 +79,7 @@ function HomeStackNavigator() {
             }}
         >
             <HomeStack.Screen name="HomeScreen" component={Screens.Home} />
+            <HomeStack.Screen name="NewsDetails" component={Screens.NewsDetails} />
         </HomeStack.Navigator>
     )
 }

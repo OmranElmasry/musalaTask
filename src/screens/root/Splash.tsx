@@ -4,13 +4,11 @@ import React, { useEffect } from 'react'
 import { StyleSheet, View, Image } from 'react-native'
 import { Images } from 'assets'
 import { useNavigation } from '@react-navigation/native'
-import { StackNavigation } from 'types'
+import { RootStackNavigation } from 'types'
 import { Constants } from 'styles'
 
-type LoginWithMobileScreenNavigationProp = StackNavigation<'SplashScreen'>
-
 export const Splash = () => {
-    const navigation = useNavigation<LoginWithMobileScreenNavigationProp>()
+    const navigation = useNavigation< RootStackNavigation<'SplashScreen'>>()
 
     useEffect(() => {
         setTimeout(() => {

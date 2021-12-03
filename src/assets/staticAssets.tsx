@@ -1,13 +1,14 @@
 /** @format */
 // @ts-nocheck
 import React from 'react'
+import { Colors } from 'styles'
 
 import HomeIcon from './icons/home.svg'
 import SettingsIcon from './icons/settings.svg'
 import HomeInactiveIcon from './icons/homeInactive.svg'
 import SettingsInactiveIcon from './icons/settingsInactive.svg'
 import Search from './icons/search.svg'
-import { Colors } from 'styles'
+import Back from './icons/back.svg'
 
 export const Images = {
     logo: require('./images/appLogo.png'),
@@ -19,4 +20,5 @@ export const Icons = {
     homeInactive: () => <HomeInactiveIcon width={30} height={30}/>,
     settingsInactive: () => <SettingsInactiveIcon width={30} height={30}/>,
     search: () => <Search width={20} height={20} stroke={Colors.colorGrey}/>,
+    back: () => <Back stroke={Colors.black}/>,
 }

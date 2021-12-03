@@ -19,9 +19,11 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { CompositeNavigationProp } from '@react-navigation/native'
 import { RouteProp } from '@react-navigation/native'
+import { NewsCard, NewsCategory } from 'types'
 
 export type HomeStackParamList = {
     HomeScreen: undefined
+    NewsDetails: { card: NewsCard; category: NewsCategory }
 }
 
 export type ProfileStackParamList = {
@@ -39,10 +41,11 @@ export type BottomTabParamList = {
 }
 
 // navigation types
-export type StackNavigation<T extends keyof RootStackParamList | null> = StackNavigationProp<RootStackParamList, T | any>
+export type RootStackNavigation<T extends keyof RootStackParamList | null> = StackNavigationProp<RootStackParamList, T | any>
+export type StackNavigation<T extends keyof HomeStackParamList | null> = StackNavigationProp<HomeStackParamList, T | any>
 export type BottomTabNavigation<T extends keyof BottomTabParamList | null> = BottomTabNavigationProp<BottomTabParamList, T | any>
 
-type Navigation = StackNavigation<keyof RootStackParamList | null> | BottomTabNavigation<keyof BottomTabParamList | null>
+type Navigation = StackNavigation<keyof HomeStackParamList | null> | BottomTabNavigation<keyof BottomTabParamList | null>
 
 export type CompositeNavigation<T extends Navigation, K extends Navigation> = CompositeNavigationProp<T, K>
 

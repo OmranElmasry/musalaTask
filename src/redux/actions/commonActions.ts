@@ -3,7 +3,7 @@
 import { Common } from "api"
 import { Dispatch } from "react"
 import { RESET_NEWS_LIST, SET_NEWS_LIST } from "redux-types"
-import { newsCard } from "types"
+import { NewsCard } from "types"
 
 export const fetchNewsData = (query: string, page: number, category: string) => {
     return (dispatch: Dispatch<any>, _: any) => {
@@ -26,7 +26,7 @@ export const fetchNewsData = (query: string, page: number, category: string) => 
     }
 }
 
-export const setNewsList = (newsList: newsCard[]) => {
+export const setNewsList = (newsList: NewsCard[]) => {
     return {
         type: SET_NEWS_LIST,
         newsList,

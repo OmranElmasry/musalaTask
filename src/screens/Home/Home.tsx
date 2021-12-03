@@ -3,31 +3,33 @@
 import { fetchNewsData, resetNewsList } from 'actions'
 import { Icons, Images } from 'assets'
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet, View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, Text, Image } from 'react-native'
+import { SafeAreaView, StyleSheet, View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, Text, Image, RefreshControl } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Colors, Constants } from 'styles'
-import { CommonStoreState, newsCard } from 'types'
+import { BottomTabNavigation, CommonStoreState, CompositeNavigation, NewsCard, NewsCategory, StackNavigation } from 'types'
+import { StaticData } from 'utils/static'
 import { Else, If, Then, When } from 'utils/conditional'
+import { useNavigation } from '@react-navigation/core'
 
+type HomeScreenNavigationProp = 
+    CompositeNavigation<StackNavigation<'HomeScreen'>,
+        CompositeNavigation<BottomTabNavigation<null>, StackNavigation<null>>
+    >
 export const Home = () => {
     const [searchText, setSearchText] = useState('')
     const [page, setPage] = useState(0)
-    const [isLoadingNews, setisLoadingNews] = useState(true)
+    const [isLoadingNews, setIsLoadingNews] = useState(true)
     const [isappendingNews, setIsappendingNews] = useState(false)
     const [updateThreshold, setUpdateThreshold] = useState(Constants.window.height)
-    const [selectedCatgory, setSelectedCatgory] = useState('general')
+    const [selectedCatgory, setSelectedCatgory] = useState(StaticData.newsCategories[0])
 
     const dispatch = useDispatch()
+
+    const navigation = useNavigation<HomeScreenNavigationProp>()
 
     const commonState: CommonStoreState = useSelector((state: any) => state.common),
         newsList = commonState.newsList,
         canLoadMoreNews = commonState.canLoadMoreNews
-
-    const tags = [
-        { id: 'general', text: 'general' }, { id: 'business', text: 'business' }, { id: 'entertainment', text: 'entertainment' }, 
-        { id: 'health', text: 'health' }, { id: 'science', text: 'science' }, { id: 'sports', text: 'sports' }, 
-        { id: 'technology', text: 'technology'} 
-    ]
 
     useEffect(() => {
         fetchNews()
@@ -35,12 +37,12 @@ export const Home = () => {
 
     const fetchNews = async () => {
         try {
-            setisLoadingNews(true)
-            await dispatch(fetchNewsData(searchText, page + 1, selectedCatgory))
+            setIsLoadingNews(true)
+            await dispatch(fetchNewsData(searchText, page + 1, selectedCatgory.id))
             setPage(page => page + 1)
-            setisLoadingNews(false)
+            setIsLoadingNews(false)
         } catch (error) {
-            setisLoadingNews(false)
+            setIsLoadingNews(false)
         }
     }
 
@@ -48,7 +50,7 @@ export const Home = () => {
         try {
             if (canLoadMoreNews) {
                 setIsappendingNews(true)
-                await dispatch(fetchNewsData(searchText, page + 1, selectedCatgory))
+                await dispatch(fetchNewsData(searchText, page + 1, selectedCatgory.id))
                 setPage(page => page + 1)
                 setIsappendingNews(false)
             }
@@ -60,29 +62,33 @@ export const Home = () => {
     const onSubmitSearch = async () => {
         try {
             setPage(1)
-            setisLoadingNews(true)
+            setIsLoadingNews(true)
             dispatch(resetNewsList())
-            await dispatch(fetchNewsData(searchText, 1, selectedCatgory))
-            setisLoadingNews(false)
+            await dispatch(fetchNewsData(searchText, 1, selectedCatgory.id))
+            setIsLoadingNews(false)
         } catch (error) {
-            setisLoadingNews(false)
+            setIsLoadingNews(false)
         }
     }
 
     const onScroll = async ({ nativeEvent: { _, __, contentOffset } }: any) => {
-        console.log('contentOffset', contentOffset);
-        
         if (contentOffset.y > updateThreshold) {
             appendNews()
             setUpdateThreshold(updateThreshold => updateThreshold + Constants.window.height)
         } 
     }
 
-    const selectCategory = (category: string) => {
+    const selectCategory = (category: NewsCategory) => {
         setSelectedCatgory(category)
         onSubmitSearch()
     }
 
+    const onCardPress = (card: NewsCard) => {
+        navigation.navigate('NewsDetails', { card, category: selectedCatgory })
+    }
+
+    const $RefreshControl: any = <RefreshControl onRefresh={onSubmitSearch} refreshing={isLoadingNews} />
+    
     const renderSearchBar = () => {
         return (
             <View style={styles.searchBarRow}>
@@ -99,17 +105,18 @@ export const Home = () => {
         )
     }
 
-    const renderNewsCard = (card: newsCard, index: number) => {
+    const renderNewsCard = (card: NewsCard, index: number) => {
         return (
             <TouchableOpacity
                 activeOpacity={1}
                 key={index}
                 style={styles.newsCard}
+                onPress={() => onCardPress(card)}
             >
                 <View style={styles.cardDetails}>
                     <Text style={styles.titleText}>{card.title}</Text>
                     <View>
-                        <Text style={styles.authorText}>{card.author}</Text>
+                        <Text style={styles.sourceText}>{card?.source?.name}</Text>
                         <Text style={styles.dateText}>{card.publishedAt.split('T')[0]}</Text>
                     </View>
                 </View>
@@ -127,7 +134,7 @@ export const Home = () => {
                 showsHorizontalScrollIndicator={false}
                 style={styles.anchorTagsList}
                 horizontal
-                data={tags}
+                data={StaticData.newsCategories}
                 renderItem={(tag) => renderAnchorTag(tag.item, tag.index)}
             />
         )
@@ -137,11 +144,11 @@ export const Home = () => {
         return (
             <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => selectCategory(tag.id)}
+                onPress={() => selectCategory(tag)}
                 key={index}
-                style={selectedCatgory === tag.id? styles.activeTag : styles.inactiveTag}
+                style={selectedCatgory.id === tag.id? styles.activeTag : styles.inactiveTag}
             >
-                <Text allowFontScaling={false} style={selectedCatgory === tag.id ? styles.activeTagText : styles.inactiveTagText}>
+                <Text style={selectedCatgory.id === tag.id ? styles.activeTagText : styles.inactiveTagText}>
                     {tag.text}
                 </Text>
             </TouchableOpacity>
@@ -153,6 +160,7 @@ export const Home = () => {
             <View style={styles.newsListContainer}>
                 {renderTags()}
                 <FlatList
+                    refreshControl={$RefreshControl}
                     onScroll={onScroll}
                     data={newsList}
                     renderItem={({ item, index }) => renderNewsCard(item, index)}
@@ -252,7 +260,7 @@ const styles = StyleSheet.create({
         color: Colors.black,
         fontWeight: '600'
     },
-    authorText: {
+    sourceText: {
         color: Colors.red,
         fontWeight: '400'
     },

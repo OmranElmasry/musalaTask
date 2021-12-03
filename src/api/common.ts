@@ -3,9 +3,9 @@
 import Requests from './constants'
 import { mainAxios } from './axios'
 import { AxiosPromise } from 'axios'
-import { newsCard } from 'types'
+import { NewsCard } from 'types'
 
-interface NewsListRequest extends AxiosPromise<newsCard[]> {}
+interface NewsListRequest extends AxiosPromise<NewsCard[]> {}
 
 export const Common = {
     get: (query: string, page: number): NewsListRequest => mainAxios.get(Requests.get(query, page)),
