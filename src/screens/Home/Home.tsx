@@ -10,6 +10,7 @@ import { BottomTabNavigation, CommonStoreState, CompositeNavigation, NewsCard, N
 import { StaticData } from 'utils/static'
 import { Else, If, Then, When } from 'utils/conditional'
 import { useNavigation } from '@react-navigation/core'
+import { translate } from 'translations'
 
 type HomeScreenNavigationProp = 
     CompositeNavigation<StackNavigation<'HomeScreen'>,
@@ -95,7 +96,7 @@ export const Home = () => {
                 {Icons.search()}
                 <TextInput
                     value={searchText}
-                    placeholder={'Filter News'}
+                    placeholder={translate('home[search][placeholder]')}
                     onChangeText={setSearchText}
                     placeholderTextColor={Colors.colorGrey3}
                     style={styles.searchTextInput}

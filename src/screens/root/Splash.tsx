@@ -6,15 +6,19 @@ import { Images } from 'assets'
 import { useNavigation } from '@react-navigation/native'
 import { RootStackNavigation } from 'types'
 import { Constants } from 'styles'
+import { loadAppLanguage } from 'actions'
 
 export const Splash = () => {
     const navigation = useNavigation< RootStackNavigation<'SplashScreen'>>()
 
     useEffect(() => {
-        setTimeout(() => {
-            navigation.replace('Home')
-        }, 1000)
+        initApp()
     }, [])
+
+    const initApp = async () => {
+        await loadAppLanguage()
+        navigation.replace('Home')
+    }
 
     return (
         <View style={styles.container}>

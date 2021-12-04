@@ -9,6 +9,8 @@ import HomeInactiveIcon from './icons/homeInactive.svg'
 import SettingsInactiveIcon from './icons/settingsInactive.svg'
 import Search from './icons/search.svg'
 import Back from './icons/back.svg'
+import Language from './icons/language.svg'
+import DarkMode from './icons/darkMode.svg'
 
 export const Images = {
     logo: require('./images/appLogo.png'),
@@ -21,4 +23,6 @@ export const Icons = {
     settingsInactive: () => <SettingsInactiveIcon width={30} height={30}/>,
     search: () => <Search width={20} height={20} stroke={Colors.colorGrey}/>,
     back: () => <Back stroke={Colors.black}/>,
+    language: () => <Language stroke={Colors.black}/>,
+    darkMode: () => <DarkMode stroke={Colors.black}/>,
 }

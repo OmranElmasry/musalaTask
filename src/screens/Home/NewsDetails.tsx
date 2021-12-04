@@ -5,6 +5,7 @@ import { Icons, Images } from 'assets'
 import React from 'react'
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Linking } from 'react-native'
 import { Colors, Constants } from 'styles'
+import { translate } from 'translations'
 import { HomeStackRoute } from 'types'
 
 type NewsDetailsRoute = HomeStackRoute<'NewsDetails'>
@@ -30,7 +31,7 @@ export const NewsDetails = () => {
                 <TouchableOpacity activeOpacity={0.5} onPress={onPressBack} style={styles.backButton}>
                     {Icons.back()}
                 </TouchableOpacity>
-                <Text style={styles.titleText}>{"Details"}</Text>
+                <Text style={styles.titleText}>{translate('newsDetails[title]')}</Text>
             </View>
         )
     }
@@ -59,7 +60,7 @@ export const NewsDetails = () => {
                 />
                 <Text style={styles.descriptionText}>{card.description}</Text>
                 <TouchableOpacity onPress={onPressReadMore}>
-                    <Text style={styles.moreInfo}>{"for more info read full article"}</Text>
+                    <Text style={styles.moreInfo}>{translate('newsDetails[seeMore][text]')}</Text>
                 </TouchableOpacity>
             </ScrollView>
         )
@@ -111,7 +112,8 @@ const styles = StyleSheet.create({
     moreInfo: {
         color: Colors.blue,
         fontSize: 18,
-        marginTop: 16
+        marginTop: 16,
+        textDecorationLine: 'underline',
     },
     newsTitleText: {
         color: Colors.black,

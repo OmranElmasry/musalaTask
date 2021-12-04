@@ -43,6 +43,7 @@ export type BottomTabParamList = {
 // navigation types
 export type RootStackNavigation<T extends keyof RootStackParamList | null> = StackNavigationProp<RootStackParamList, T | any>
 export type StackNavigation<T extends keyof HomeStackParamList | null> = StackNavigationProp<HomeStackParamList, T | any>
+export type ProfileStackNavigation<T extends keyof ProfileStackParamList | null> = StackNavigationProp<ProfileStackParamList, T | any>
 export type BottomTabNavigation<T extends keyof BottomTabParamList | null> = BottomTabNavigationProp<BottomTabParamList, T | any>
 
 type Navigation = StackNavigation<keyof HomeStackParamList | null> | BottomTabNavigation<keyof BottomTabParamList | null>
@@ -53,5 +54,6 @@ export type CompositeNavigation<T extends Navigation, K extends Navigation> = Co
 export type StackRoute<T extends keyof RootStackParamList> = RouteProp<RootStackParamList, T>
 
 export type HomeStackRoute<T extends keyof HomeStackParamList> = RouteProp<HomeStackParamList, T>
+export type ProfileStackRoute<T extends keyof ProfileStackParamList> = RouteProp<ProfileStackParamList, T>
 
 export type BottomTabRoute<T extends keyof BottomTabParamList> = RouteProp<BottomTabParamList, T>

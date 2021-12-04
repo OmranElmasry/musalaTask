@@ -1,0 +1,19 @@
+{
+    "home[search][placeholder]": "Filter News",
+    "newsDetails[title]": "Details",
+    "newsDetails[seeMore][text]": "For more info read full articles.",
+    "static[newsCategories][general]": "general",
+    "static[newsCategories][business]": "business",
+    "static[newsCategories][entertainment]": "entertainment",
+    "static[newsCategories][health]": "health",
+    "static[newsCategories][science]": "science",
+    "static[newsCategories][sports]": "sports",
+    "static[newsCategories][technology]": "technology",
+    "settings[title]": "Settings",
+    "settings[darkMode]": "Dark Mode",
+    "settings[language]": "App Language",
+    "english": "English",
+    "bulgarian": "Bulgarian",
+    "settings[save]": "Apply and Save",
+    "settings[modal][title]": "Select app language"
+}

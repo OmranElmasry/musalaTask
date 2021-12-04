@@ -1,6 +1,8 @@
 export type CommonStoreState = {
     newsList: NewsCard[]
     canLoadMoreNews: boolean
+    locale: Locale
+    isDarkMode: boolean
 }
 
 export type NewsCard = {
@@ -21,4 +23,8 @@ export type NewsCategory = {
     id: string,
     index: number,
     text: string
+}
+
+export type Locale = {
+    languageCode: 'en' | 'bgr',
 }

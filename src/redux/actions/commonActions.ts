@@ -2,8 +2,9 @@
 
 import { Common } from "api"
 import { Dispatch } from "react"
-import { RESET_NEWS_LIST, SET_NEWS_LIST } from "redux-types"
-import { NewsCard } from "types"
+import { RESET_NEWS_LIST, SET_APP_LANGUAGE, SET_DARK_MODE, SET_NEWS_LIST } from "redux-types"
+import { setI18nConfig } from "translations"
+import { Locale, NewsCard } from "types"
 
 export const fetchNewsData = (query: string, page: number, category: string) => {
     return (dispatch: Dispatch<any>, _: any) => {
@@ -26,6 +27,18 @@ export const fetchNewsData = (query: string, page: number, category: string) => 
     }
 }
 
+export const loadAppLanguage = () => {
+    return new Promise<void>(async (resolve, reject) => {
+        try {
+            await setI18nConfig()
+            resolve()
+        } catch (error) {
+            console.log(error)
+            reject(error)
+        }
+    })
+}
+
 export const setNewsList = (newsList: NewsCard[]) => {
     return {
         type: SET_NEWS_LIST,
@@ -36,5 +49,19 @@ export const setNewsList = (newsList: NewsCard[]) => {
 export const resetNewsList = () => {
     return {
         type: RESET_NEWS_LIST,
+    }
+}
+
+export const setAppLanguage = (locale: Locale) => {
+    return {
+        type: SET_APP_LANGUAGE,
+        locale
+    }
+}
+
+export const setDarkMode = (isDarkMode: boolean) => {
+    return {
+        type: SET_DARK_MODE,
+        isDarkMode
     }
 }

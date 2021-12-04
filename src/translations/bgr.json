@@ -1,0 +1,19 @@
+{
+    "home[search][placeholder]": "Филтрирайте новини",
+    "newsDetails[title]": "Подробности",
+    "newsDetails[seeMore][text]": "за повече информация прочетете цялата статия",
+    "static[newsCategories][general]": "общ",
+    "static[newsCategories][business]": "бизнес",
+    "static[newsCategories][entertainment]": "забавление",
+    "static[newsCategories][health]": "здраве",
+    "static[newsCategories][science]": "наука",
+    "static[newsCategories][sports]": "спортни",
+    "static[newsCategories][technology]": "технология",
+    "settings[title]": "Настройки",
+    "settings[darkMode]": "Тъмен режим",
+    "settings[language]": "Език на приложението",
+    "english": "Английски",
+    "bulgarian": "български",
+    "settings[save]": "Приложете и запазете",
+    "settings[modal][title]": "Изберете език на приложението"
+}
