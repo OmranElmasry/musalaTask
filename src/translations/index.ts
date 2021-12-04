@@ -1,6 +1,5 @@
 /** @format */
 import i18n from 'i18n-js'
-import memoize from 'lodash.memoize'
 import AsyncStorage from '@react-native-community/async-storage'
 import { Locale } from 'types'
 import en from './en.json'
@@ -12,10 +11,8 @@ export const translationGetters = {
     bgr: () => require('./bgr.json'),
 }
 
-export const translate = memoize(
-    (key: keyof typeof en, config?: any) => i18n.t(key, config),
-    (key: string, config?: any) => (config ? key + JSON.stringify(config) : key)
-)
+export const translate = (key: keyof typeof en, config?: any) => i18n.t(key, config)
+
 export const setI18nConfig = async () => {
     return new Promise<void>(async (resolve, reject) => {
         try {
