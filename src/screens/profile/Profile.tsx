@@ -5,21 +5,20 @@ import React, { useState } from 'react'
 import { StyleSheet, View, SafeAreaView, Text, TouchableOpacity } from 'react-native'
 import { Switch } from 'react-native-gesture-handler'
 import { useDispatch, useSelector } from 'react-redux'
-import { Colors, Constants } from 'styles'
+import { Colors, Constants, getThemeColor } from 'styles'
 import { setI18nConfig, translate } from 'translations'
 import { setAppLanguage as updateAppLanguage, setDarkMode } from 'actions'
 import { CommonStoreState } from 'types'
 import Modal from 'react-native-modal'
-import RNRestart from 'react-native-restart'
 import AsyncStorage from '@react-native-community/async-storage'
 
 export const Profile = () => {
 
     const commonState: CommonStoreState = useSelector((state: any) => state.common),
-        savedDarkMode = commonState.isDarkMode,
+        storeDarkMode = commonState.isDarkMode,
         locale = commonState.locale
         
-    const [isDarkMode, setIsDarkMode] = useState(savedDarkMode)
+    const [isDarkMode, setIsDarkMode] = useState(storeDarkMode)
     const [appLanguage, setAppLanguage] = useState(locale)
     const [languagesModalIsVisible, setLanguagesModalIsVisible] = useState(false)
 
@@ -36,16 +35,12 @@ export const Profile = () => {
 
     const onPressSave = async () => {
         dispatch(setDarkMode(isDarkMode))
-        if (locale.languageCode !== appLanguage.languageCode) {
-            await AsyncStorage.setItem('defaultLocale', appLanguage.languageCode)
-            await setI18nConfig()
-            dispatch(updateAppLanguage(locale))
-            RNRestart.Restart()
-        } else {
-            await AsyncStorage.setItem('defaultLocale', appLanguage.languageCode)
-            await setI18nConfig()
-            dispatch(updateAppLanguage(locale))
-        }
+        await AsyncStorage.multiSet([
+                            ['defaultLocale', appLanguage.languageCode],
+                            ['isDarkMode', String(isDarkMode)]
+                        ])
+        await setI18nConfig()
+        dispatch(updateAppLanguage(locale))
     }
 
     const onPressLanguage = (language: 'en' | 'bgr') => {
@@ -53,9 +48,17 @@ export const Profile = () => {
         setAppLanguage({languageCode: language})
     } 
 
+    const getTagColor = (language: 'en' | 'bgr') => {
+        if (language === 'en') {
+
+        } else {
+            
+        }
+    }
+
     const renderTopBar = () => {
         return (
-            <View style={styles.navBar}>
+            <View style={storeDarkMode ? styles.darkNavBar : styles.navBar }>
                 <Text style={styles.titleText}>{translate('settings[title]')}</Text>
             </View>
         )
@@ -72,11 +75,11 @@ export const Profile = () => {
     const renderSettings = () => {
         return (
             <View style={styles.settingContainer}>
-                <View style={styles.settingRow}>
+                <View style={storeDarkMode ? styles.darkSettingRow : styles.settingRow}>
                     <View style={styles.iconWrapper}>
-                        {Icons.darkMode()}
+                        {Icons.darkMode('tabBarIconColor', storeDarkMode)}
                     </View>
-                    <Text style={styles.settingText}>{translate('settings[darkMode]')}</Text>
+                    <Text style={storeDarkMode ? styles.darkSettingText : styles.settingText}>{translate('settings[darkMode]')}</Text>
                     <Switch
                         value={isDarkMode}
                         onValueChange={setIsDarkMode}
@@ -84,11 +87,11 @@ export const Profile = () => {
                         trackColor={{false: Colors.colorGrey3}}
                     />
                 </View>
-                <View style={styles.settingRow}>
+                <View style={storeDarkMode ? styles.darkSettingRow : styles.settingRow}>
                     <View style={styles.iconWrapper}>
-                        {Icons.language()}
+                        {Icons.language('tabBarIconColor', storeDarkMode)}
                     </View>
-                    <Text style={styles.settingText}>{translate('settings[language]')}</Text>
+                    <Text style={storeDarkMode ? styles.darkSettingText : styles.settingText}>{translate('settings[language]')}</Text>
                     <TouchableOpacity onPress={() => setLanguagesModalIsVisible(true)} style={styles.dynamicValue}>
                         <Text style={styles.dynamicText}>{mapISOToText(appLanguage.languageCode)}</Text>
                     </TouchableOpacity>
@@ -107,8 +110,8 @@ export const Profile = () => {
                 onBackButtonPress={() => setLanguagesModalIsVisible(false)}
                 style={styles.modal}
             >
-                <View style={styles.modalBody}>
-                    <Text style={styles.modalTitle}>{translate('settings[modal][title]')}</Text>
+                <View style={storeDarkMode ? styles.darkModalBody : styles.modalBody}>
+                    <Text style={storeDarkMode ? styles.darkModalTitle : styles.modalTitle}>{translate('settings[modal][title]')}</Text>
                     <View style={styles.languageOptions}>
                         <TouchableOpacity onPress={() => onPressLanguage('en')} style={appLanguage.languageCode === 'en' ? styles.activeTag : styles.inactiveTag}>
                             <Text style={appLanguage.languageCode === 'en' ? styles.activeTagText : styles.inactiveTagText}>{mapISOToText('en')}</Text>
@@ -123,7 +126,7 @@ export const Profile = () => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={storeDarkMode ? styles.darkContainer : styles.container}>
             {renderTopBar()}
             {renderSettings()}
             {renderLanguagesModal()}
@@ -134,9 +137,20 @@ export const Profile = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: getThemeColor(false, 'background')
+    },
+    darkContainer: {
+        flex: 1,
+        backgroundColor: getThemeColor(true, 'background')
     },
     modalTitle: {
-        color: Colors.black,
+        color: getThemeColor(false, 'normalText'),
+        fontSize: 20,
+        alignSelf: 'center',
+        fontWeight: '600'
+    },
+    darkModalTitle: {
+        color: getThemeColor(true, 'normalText'),
         fontSize: 20,
         alignSelf: 'center',
         fontWeight: '600'
@@ -147,7 +161,12 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     modalBody: {
-        backgroundColor: Colors.white,
+        backgroundColor: getThemeColor(false, 'modalBackground'),
+        paddingVertical: 60,
+        borderRadius: 16
+    },
+    darkModalBody: {
+        backgroundColor: getThemeColor(true, 'modalBackground'),
         paddingVertical: 60,
         borderRadius: 16
     },
@@ -206,7 +225,14 @@ const styles = StyleSheet.create({
         borderRadius: 32
     },
     settingText: {
-        color: Colors.black,
+        color: getThemeColor(false, 'normalText'),
+        marginEnd: 32,
+        fontSize: 20,
+        fontWeight: '600',
+        flex: 0.4
+    },
+    darkSettingText: {
+        color: getThemeColor(true, 'normalText'),
         marginEnd: 32,
         fontSize: 20,
         fontWeight: '600',
@@ -221,7 +247,11 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     navBar: {
-        backgroundColor: Colors.white,
+        backgroundColor: getThemeColor(false, 'navBarBackground'),
+        padding: 30
+    },
+    darkNavBar: {
+        backgroundColor: getThemeColor(true, 'navBarBackground'),
         padding: 30
     },
     settingContainer: {
@@ -244,7 +274,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginVertical: 12,
         marginHorizontal: 12,
-        backgroundColor: Colors.white,
+        backgroundColor: getThemeColor(false, 'cardBackground'),
+        alignItems: 'center',
+        borderRadius: 24
+    },
+    darkSettingRow: {
+        flexDirection: 'row',
+        marginVertical: 12,
+        marginHorizontal: 12,
+        backgroundColor: getThemeColor(true, 'cardBackground'),
         alignItems: 'center',
         borderRadius: 24
     }

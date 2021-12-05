@@ -4,13 +4,17 @@ import { useNavigation, useRoute } from '@react-navigation/core'
 import { Icons, Images } from 'assets'
 import React from 'react'
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Linking } from 'react-native'
-import { Colors, Constants } from 'styles'
+import { useSelector } from 'react-redux'
+import { Colors, Constants, getThemeColor } from 'styles'
 import { translate } from 'translations'
-import { HomeStackRoute } from 'types'
+import { CommonStoreState, HomeStackRoute } from 'types'
 
 type NewsDetailsRoute = HomeStackRoute<'NewsDetails'>
 
 export const NewsDetails = () => {
+
+    const commonState: CommonStoreState = useSelector((state: any) => state.common),
+        isDarkMode = commonState.isDarkMode
 
     const navigation = useNavigation()
     const route = useRoute<NewsDetailsRoute>()
@@ -27,11 +31,11 @@ export const NewsDetails = () => {
 
     const renderTopBar = () => {
         return (
-            <View style={styles.navBar}>
+            <View style={isDarkMode ? styles.darkNavBar : styles.navBar}>
                 <TouchableOpacity activeOpacity={0.5} onPress={onPressBack} style={styles.backButton}>
-                    {Icons.back()}
+                    {Icons.back('backIcon', isDarkMode)}
                 </TouchableOpacity>
-                <Text style={styles.titleText}>{translate('newsDetails[title]')}</Text>
+                <Text style={isDarkMode ? styles.darkTitleText : styles.titleText}>{translate('newsDetails[title]')}</Text>
             </View>
         )
     }
@@ -49,16 +53,16 @@ export const NewsDetails = () => {
 
     const renderDetailsBody = () => {
         return (
-            <ScrollView style={styles.detailsBody}>
-                <Text style={styles.newsTitleText}>{card.title}</Text>
-                <Text style={styles.authorText}>{card.author}</Text>
+            <ScrollView style={isDarkMode ? styles.darkDetailsBody : styles.detailsBody}>
+                <Text style={isDarkMode ? styles.darkNewsTitleText : styles.newsTitleText}>{card.title}</Text>
+                <Text style={isDarkMode ? styles.darkAuthorText : styles.authorText}>{card.author}</Text>
                 <Image
                     source={!!card.urlToImage ? { uri: card.urlToImage } : Images.brokenImage}
                     style={styles.image}
                     resizeMethod={'auto'}
                     resizeMode={'cover'}
                 />
-                <Text style={styles.descriptionText}>{card.description}</Text>
+                <Text style={isDarkMode ? styles.darkDescriptionText : styles.descriptionText}>{card.description}</Text>
                 <TouchableOpacity onPress={onPressReadMore}>
                     <Text style={styles.moreInfo}>{translate('newsDetails[seeMore][text]')}</Text>
                 </TouchableOpacity>
@@ -67,7 +71,7 @@ export const NewsDetails = () => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={isDarkMode ? styles.darkContainer : styles.container}>
             {renderTopBar()}
             {renderHeaderSection()}
             {renderDetailsBody()}
@@ -78,6 +82,11 @@ export const NewsDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: getThemeColor(false, 'background')
+    },
+    darkContainer: {
+        flex: 1,
+        backgroundColor: getThemeColor(true, 'background')
     },
     image: {
         marginTop: 26,
@@ -85,18 +94,37 @@ const styles = StyleSheet.create({
         width: Constants.window.width - 32
     },
     authorText: {
-        color: Colors.colorGrey3,
+        color: getThemeColor(false, 'red'),
+        fontWeight: '400',
+        marginTop: 16,
+        fontSize: 16
+    },
+    darkAuthorText: {
+        color: getThemeColor(true, 'red'),
         fontWeight: '400',
         marginTop: 16,
         fontSize: 16
     },
     detailsBody: {
         padding: 16,
-        backgroundColor: Colors.white,
+        backgroundColor: getThemeColor(false, 'cardBackground'),
+        flex: 1
+    },
+    darkDetailsBody: {
+        padding: 16,
+        backgroundColor: getThemeColor(true, 'cardBackground'),
         flex: 1
     },
     titleText: {
-        color: Colors.black,
+        color: getThemeColor(false, 'normalText'),
+        alignSelf: 'center',
+        flex: 1,
+        textAlign: 'center',
+        fontSize: 24,
+        fontWeight: '600'
+    },
+    darkTitleText: {
+        color: getThemeColor(true, 'normalText'),
         alignSelf: 'center',
         flex: 1,
         textAlign: 'center',
@@ -104,7 +132,13 @@ const styles = StyleSheet.create({
         fontWeight: '600'
     },
     descriptionText: {
-        color: Colors.black,
+        color: getThemeColor(false, 'normalText'),
+        alignSelf: 'center',
+        fontSize: 18,
+        marginTop: 16
+    },
+    darkDescriptionText: {
+        color: getThemeColor(true, 'normalText'),
         alignSelf: 'center',
         fontSize: 18,
         marginTop: 16
@@ -116,7 +150,13 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
     },
     newsTitleText: {
-        color: Colors.black,
+        color: getThemeColor(false, 'normalText'),
+        fontWeight: '500',
+        fontSize: 30,
+        lineHeight: 40
+    },
+    darkNewsTitleText: {
+        color: getThemeColor(true, 'normalText'),
         fontWeight: '500',
         fontSize: 30,
         lineHeight: 40
@@ -155,7 +195,12 @@ const styles = StyleSheet.create({
     },
     navBar: {
         flexDirection: 'row',
-        backgroundColor: Colors.white,
+        backgroundColor: getThemeColor(false, 'navBarBackground'),
+        padding: 30
+    },
+    darkNavBar: {
+        flexDirection: 'row',
+        backgroundColor: getThemeColor(true, 'navBarBackground'),
         padding: 30
     }
 })

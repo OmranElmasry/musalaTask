@@ -5,9 +5,8 @@ import { Icons, Images } from 'assets'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StyleSheet, View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, Text, Image, RefreshControl } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { Colors, Constants } from 'styles'
+import { Colors, Constants, getThemeColor } from 'styles'
 import { BottomTabNavigation, CommonStoreState, CompositeNavigation, NewsCard, NewsCategory, StackNavigation } from 'types'
-import { StaticData } from 'utils/static'
 import { Else, If, Then, When } from 'utils/conditional'
 import { useNavigation } from '@react-navigation/core'
 import { translate } from 'translations'
@@ -17,12 +16,22 @@ type HomeScreenNavigationProp =
         CompositeNavigation<BottomTabNavigation<null>, StackNavigation<null>>
     >
 export const Home = () => {
+    const newsCategories =  [
+        { index: 0, id: 'general', text: translate('static[newsCategories][general]') }, 
+        { index: 1, id: 'business', text: translate('static[newsCategories][business]') }, 
+        { index: 2, id: 'entertainment', text: translate('static[newsCategories][entertainment]') }, 
+        { index: 3, id: 'health', text: translate('static[newsCategories][health]') }, 
+        { index: 4, id: 'science', text: translate('static[newsCategories][science]') }, 
+        { index: 5, id: 'sports', text: translate('static[newsCategories][sports]') }, 
+        { index: 6, id: 'technology', text: translate('static[newsCategories][technology]')} 
+    ]
+
     const [searchText, setSearchText] = useState('')
     const [page, setPage] = useState(0)
     const [isLoadingNews, setIsLoadingNews] = useState(true)
     const [isappendingNews, setIsappendingNews] = useState(false)
     const [updateThreshold, setUpdateThreshold] = useState(Constants.window.height)
-    const [selectedCatgory, setSelectedCatgory] = useState(StaticData.newsCategories[0])
+    const [selectedCatgory, setSelectedCatgory] = useState(newsCategories[0])
 
     const dispatch = useDispatch()
 
@@ -30,7 +39,8 @@ export const Home = () => {
 
     const commonState: CommonStoreState = useSelector((state: any) => state.common),
         newsList = commonState.newsList,
-        canLoadMoreNews = commonState.canLoadMoreNews
+        canLoadMoreNews = commonState.canLoadMoreNews,
+        isDarkMode = commonState.isDarkMode
 
     useEffect(() => {
         fetchNews()
@@ -92,13 +102,13 @@ export const Home = () => {
     
     const renderSearchBar = () => {
         return (
-            <View style={styles.searchBarRow}>
-                {Icons.search()}
+            <View style={isDarkMode ? styles.darkSearchBarRow : styles.searchBarRow}>
+                {Icons.search('black')}
                 <TextInput
                     value={searchText}
                     placeholder={translate('home[search][placeholder]')}
                     onChangeText={setSearchText}
-                    placeholderTextColor={Colors.colorGrey3}
+                    placeholderTextColor={getThemeColor(isDarkMode, 'placeholderText')}
                     style={styles.searchTextInput}
                     onSubmitEditing={onSubmitSearch}
                 />
@@ -111,11 +121,11 @@ export const Home = () => {
             <TouchableOpacity
                 activeOpacity={1}
                 key={index}
-                style={styles.newsCard}
+                style={isDarkMode ? styles.darkNewsCard : styles.newsCard}
                 onPress={() => onCardPress(card)}
             >
                 <View style={styles.cardDetails}>
-                    <Text style={styles.titleText}>{card.title}</Text>
+                    <Text style={isDarkMode ? styles.darkTitleText : styles.titleText}>{card.title}</Text>
                     <View>
                         <Text style={styles.sourceText}>{card?.source?.name}</Text>
                         <Text style={styles.dateText}>{card.publishedAt.split('T')[0]}</Text>
@@ -135,7 +145,7 @@ export const Home = () => {
                 showsHorizontalScrollIndicator={false}
                 style={styles.anchorTagsList}
                 horizontal
-                data={StaticData.newsCategories}
+                data={newsCategories}
                 renderItem={(tag) => renderAnchorTag(tag.item, tag.index)}
             />
         )
@@ -167,18 +177,18 @@ export const Home = () => {
                     renderItem={({ item, index }) => renderNewsCard(item, index)}
                 />
                 <When condition={isappendingNews}>
-                    <ActivityIndicator style={styles.appendingActivityIndicator} size={'large'} animating color={Colors.colorGrey3}/>
+                    <ActivityIndicator style={styles.appendingActivityIndicator} size={'large'} animating color={getThemeColor(true,'colorGrey3')}/>
                 </When>
             </View>
         )
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={isDarkMode ? styles.darkContainer : styles.container}>
             {renderSearchBar()}
             <If condition={isLoadingNews}>
                 <Then>
-                    <ActivityIndicator style={styles.activityIndicator} size="large" animating color={Colors.colorGrey3}/>
+                    <ActivityIndicator style={styles.activityIndicator} size="large" animating color={getThemeColor(true,'colorGrey3')}/>
                 </Then>
                 <Else>
                     {renderNewsList()}
@@ -193,7 +203,15 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 16,
         marginTop: 32,
-        paddingBottom: 130
+        paddingBottom: 130,
+        backgroundColor: getThemeColor(false, 'background')
+    },
+    darkContainer: {
+        flex: 1,
+        paddingHorizontal: 16,
+        paddingTop: 32,
+        paddingBottom: 130,
+        backgroundColor: getThemeColor(true, 'background')
     },
     activeTag: {
         height: 35,
@@ -201,7 +219,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingTop: 6,
         paddingBottom: 7,
-        backgroundColor: Colors.blue,
+        backgroundColor: getThemeColor(true,'blue'),
         justifyContent: 'center',
         alignItems: 'center',
         marginEnd: 5,
@@ -219,12 +237,12 @@ const styles = StyleSheet.create({
     activeTagText: {
         fontSize: 16,
         fontWeight: '400',
-        color: Colors.white,
+        color: getThemeColor(true,'white'),
     },
     inactiveTagText: {
         fontSize: 16,
         fontWeight: '400',
-        color: Colors.blue,
+        color: getThemeColor(true,'blue'),
     },
     image: {
         height: 100,
@@ -240,7 +258,13 @@ const styles = StyleSheet.create({
     newsCard: {
         marginVertical: 6,
         padding: 20,
-        backgroundColor: Colors.white,
+        backgroundColor: getThemeColor(false, 'cardBackground'),
+        flexDirection: 'row'
+    },
+    darkNewsCard: {
+        marginVertical: 6,
+        padding: 20,
+        backgroundColor: getThemeColor(true, 'cardBackground'),
         flexDirection: 'row'
     },
     searchBarRow: {
@@ -249,24 +273,39 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         borderRadius: 24,
-        backgroundColor: Colors.colorGrey
+        backgroundColor: getThemeColor(false, 'colorGrey')
+    },
+    darkSearchBarRow: {
+        paddingStart: 12,
+        paddingEnd: 32,
+        alignItems: 'center',
+        flexDirection: 'row',
+        borderRadius: 24,
+        backgroundColor: getThemeColor(true, 'colorGrey3')
     },
     searchTextInput: {
         marginStart: 4,
-        color: Colors.black
+        color: Colors.black,
+        flex: 1
     },
     newsListContainer: {
     },
     titleText: {
-        color: Colors.black,
+        color: getThemeColor(false, 'normalText'),
+        paddingEnd: 8,
+        fontWeight: '600'
+    },
+    darkTitleText: {
+        color: getThemeColor(true, 'normalText'),
+        paddingEnd: 8,
         fontWeight: '600'
     },
     sourceText: {
-        color: Colors.red,
+        color: getThemeColor(true,'red'),
         fontWeight: '400'
     },
     dateText: {
-        color: Colors.colorGrey3,
+        color: getThemeColor(true,'colorGrey3'),
         fontWeight: '400'
     },
     cardDetails: {

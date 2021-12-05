@@ -1,7 +1,7 @@
 {
     "home[search][placeholder]": "Filter News",
     "newsDetails[title]": "Details",
-    "newsDetails[seeMore][text]": "For more info read full articles.",
+    "newsDetails[seeMore][text]": "For more info read full articles",
     "static[newsCategories][general]": "general",
     "static[newsCategories][business]": "business",
     "static[newsCategories][entertainment]": "entertainment",
