@@ -3,7 +3,7 @@
 import { fetchNewsData, resetNewsList } from 'actions'
 import { Icons, Images } from 'assets'
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet, View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, Text, Image, RefreshControl } from 'react-native'
+import { SafeAreaView, StyleSheet, View, TextInput, FlatList, TouchableOpacity, ActivityIndicator, Text, Image, RefreshControl, Linking } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Colors, Constants, getThemeColor } from 'styles'
 import { BottomTabNavigation, CommonStoreState, CompositeNavigation, NewsCard, NewsCategory, StackNavigation } from 'types'
@@ -45,6 +45,38 @@ export const Home = () => {
     useEffect(() => {
         fetchNews()
     }, [])
+
+    useEffect(() => {
+        // Get the deep link used to open the app
+        getDeepLinkingAsync()
+    }, [])
+    
+    const getDeepLinkingAsync = async () => {
+        // Get the deep link used to open the app
+        const initialUrl: any = await Linking.getInitialURL()
+        handleDeepLinking(initialUrl)
+        // Get the deep link if the app in foreground
+        Linking.addEventListener('url', handleForegroundURL)
+    }
+
+    const handleForegroundURL = ({ url }: any) => {
+        handleDeepLinking(url)
+    }
+
+    const handleDeepLinking = async (initialUrl: string) => {
+        if (initialUrl) {
+            const url = initialUrl.split('musalaSoftSomething://')[1]
+            const card = JSON.parse(initialUrl.split('card=')[1])
+            const selectedCatgory = JSON.parse(initialUrl.split('category=')[1])
+            if (url) {
+                switch (url) {
+                    case 'newsDetails': // Navigate user to verify email screen
+                        navigation.navigate('NewsDetails', { card, category: selectedCatgory })
+                        break
+                }
+            }
+        }
+    }
 
     const fetchNews = async () => {
         try {
